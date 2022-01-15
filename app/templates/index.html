@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>Hello {{ name }}</h1>
+
+        <form action="{{ url_for('handle_data') }}" method="post">
+            <input type="text" name="projectFilepath">
+            <input type="submit">
+        </form>
+
+    </body>
+</html>
