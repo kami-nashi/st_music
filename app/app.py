@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, send_file
 import lib.logicMain as music
+import lib.mqSendMessage as sendMusic
 import json
 import st_dbConf
+
+
 
 
 app = Flask(__name__)
@@ -18,8 +21,9 @@ def home():
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
     projectpath = request.form['projectFilepath']
-    print(projectpath)
-    music.musicDownload(projectpath)
+    #print(projectpath)
+    #music.musicDownload(projectpath)
+    sendMusic.mqsend_downloader(projectpath)
     return render_template('index.html', title="title", name=projectpath)
 
 @app.route('/download')
