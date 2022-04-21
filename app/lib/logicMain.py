@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 import youtube_dl
 
 class MyLogger(object):
@@ -11,13 +12,13 @@ class MyLogger(object):
 
 def my_hook(d):
     if d['status'] == 'finished':
-        print('Done downloading, now converting ...')
+        print('[youtube-dl] Done downloading, now converting ...')
 
 def musicDownload(url):
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': '/tmp/%(title)s.%(ext)s',
+        'outtmpl': '/tmp/%(id)s.%(ext)s',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -29,7 +30,17 @@ def musicDownload(url):
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=False)
-        print(info_dict)
-        ydl.download([url])
 
-    return "Complete"
+        iMaxDuration = int(600)
+        iDuration = info_dict["duration"]
+        if iDuration > iMaxDuration:
+            print(
+                "[youtube-dl] Too long to download, %ds > %ds" %
+                (iDuration, iMaxDuration))
+            print("[youtube-dl]", info_dict["id"], "processing complete ...")
+        else:
+            print("[youtube-dl] Downloading","'" + info_dict["title"] + "'...", "as", info_dict["id"] + '.mp3', 'from', url)
+            ydl.download([url])
+            print("[youtube-dl]", info_dict["id"], "processing complete ...")
+
+    return ydl_opts
